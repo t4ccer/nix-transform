@@ -1,0 +1,7 @@
+[workspace]
+resolver = "2"
+members = [
+        "src/nix-transform",
+        "src/nix-transform-el",
+        "src/emacs-module",
+        ]

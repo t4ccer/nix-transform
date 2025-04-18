@@ -1,0 +1,51 @@
+* =nix-transform=
+
+Tree-sitter based library for transforming Nix source files.
+
+** Editor Integration
+
+*** Emacs
+
+Requires Emacs compiled with support for [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Dynamic-Modules.html][dynamic modules]].
+
+**** Usage
+
+- =nix-transform-update-fetcher= - Put cursor in attrset that is an argument to a fetcher and call this function, it will update hash in place.
+
+**** Installation
+
+***** With Nix
+
+#+begin_src console
+$ mkdir -p ~/.emacs.d/dynamic-modules # or any path other you want
+$ nix build -L github:t4ccer/nix-transform
+$ nix-store --realise ./result --add-root ~/.emacs.d/dynamic-modules/nix-transform.root
+$ ln -s ~/.emacs.d/dynamic-modules/nix-transform.root/lib/libnix_transform_el.so ~/.emacs.d/dynamic-modules/nix-transform.so -f
+#+end_src
+
+***** With Cargo
+
+#+begin_src console
+$ mkdir -p ~/.emacs.d/dynamic-modules # or any path other you want
+$ cargo build --release
+$ cp ./target/release/libnix_transform_el.so ~/.emacs.d/dynamic-modules/nix-transform.so
+#+end_src
+
+Note that this is not recommended on NixOS for long-term use (but perfect for development) as runtime dependencies of elrage.so file such as glibc may get garbage collected.
+
+***** Common
+
+#+begin_src elisp
+(add-to-list 'load-path "~/.emacs.d/dynamic-modules")
+(require 'nix-transform)
+#+end_src
+
+** License
+
+Copyright (C) 2025 Tomasz Maciosowski (t4ccer)
+
+This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.

@@ -1,0 +1,8 @@
+[package]
+name = "nix-transform"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tree-sitter = "0.25.3"
+tree-sitter-nix = "0.0.2"
