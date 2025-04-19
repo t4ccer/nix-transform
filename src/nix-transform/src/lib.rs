@@ -271,6 +271,12 @@ fn update_fetcher_prepare(
                     ))?,
                 };
             }
+            "comment" => {
+                let p = cursor_node
+                    .parent()
+                    .ok_or_else(|| UpdateFetcherError::invalid_attrset_no_parent())?;
+                cursor_node = p;
+            }
             kind => Err(UpdateFetcherError::invalid_attr_set_invalid_kind(
                 String::from(kind),
             ))?,
@@ -482,7 +488,7 @@ mk_test! {
     github_attr_empty_hash,
     cursor_range: Span {
         start: 59,
-        end: 134,
+        end: 148,
     },
     old_hash_attr: Span {
         start: 129,

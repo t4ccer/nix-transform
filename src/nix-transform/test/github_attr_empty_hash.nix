@@ -7,4 +7,5 @@ pkgs.fetchFromGitHub {
   repo = "cgt-tools";
   rev = "v0.7.0";
   hash = "";
+  # a comment
 }
