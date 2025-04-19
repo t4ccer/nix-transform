@@ -337,17 +337,22 @@ fn update_fetcher_prepare(
         .ok_or_else(|| UpdateFetcherError::invalid_fetcher_call())?;
     let mut old_hash = None;
     for c in binding_set.children(&mut binding_set.walk()) {
-        let attr = c.child_by_field_name("attrpath").ok_or_else(|| {
-            UpdateFetcherError::invalid_attr_missing_child(String::from("attrpath"))
-        })?;
-        let expr = c.child_by_field_name("expression").ok_or_else(|| {
-            UpdateFetcherError::invalid_attr_missing_child(String::from("expression"))
-        })?;
-        if &source[attr.start_byte()..attr.end_byte()] == "hash" {
-            old_hash = Some(Span {
-                start: expr.start_byte(),
-                end: expr.end_byte(),
-            });
+        match c.kind() {
+            "binding" => {
+                let attr = c.child_by_field_name("attrpath").ok_or_else(|| {
+                    UpdateFetcherError::invalid_attr_missing_child(String::from("attrpath"))
+                })?;
+                let expr = c.child_by_field_name("expression").ok_or_else(|| {
+                    UpdateFetcherError::invalid_attr_missing_child(String::from("expression"))
+                })?;
+                if &source[attr.start_byte()..attr.end_byte()] == "hash" {
+                    old_hash = Some(Span {
+                        start: expr.start_byte(),
+                        end: expr.end_byte(),
+                    });
+                }
+            }
+            _ => {}
         }
     }
 
@@ -513,6 +518,19 @@ mk_test! {
     old_hash_attr: Span {
         start: 129,
         end: 182,
+    },
+    fetcher: Fetcher::FetchFromGitHub
+}
+
+mk_test! {
+    github_set_src,
+    cursor_range: Span {
+        start: 83,
+        end: 190,
+    },
+    old_hash_attr: Span {
+        start: 167,
+        end: 169,
     },
     fetcher: Fetcher::FetchFromGitHub
 }
