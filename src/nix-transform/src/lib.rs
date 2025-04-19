@@ -286,7 +286,12 @@ fn update_fetcher_prepare(
     let func_apply = attr_set
         .parent()
         .ok_or_else(|| UpdateFetcherError::invalid_attrset_no_parent())?;
-    assert_eq!(func_apply.kind(), "apply_expression");
+    match func_apply.kind() {
+        "apply_expression" => {}
+        kind => Err(UpdateFetcherError::invalid_attr_set_invalid_kind(
+            String::from(kind),
+        ))?,
+    }
 
     let mut function = func_apply
         .child_by_field_name("function")
@@ -352,7 +357,9 @@ fn update_fetcher_prepare(
     };
 
     let old_hash_raw = &source[old_hash_attr.start..old_hash_attr.end];
-    assert!(old_hash_raw.len() >= 2, "string hash must have quotes");
+    if old_hash_raw.len() < 2 {
+        Err(UpdateFetcherError::MissingHashAttribute)?;
+    }
 
     Ok(UpdateFetcherInput {
         old_hash_attr,
